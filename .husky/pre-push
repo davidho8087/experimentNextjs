@@ -1,5 +1,4 @@
 #!/bin/sh
-. "$(dirname "$0")/h"
 
 echo "Running yarn build before pushing..."
 yarn build
