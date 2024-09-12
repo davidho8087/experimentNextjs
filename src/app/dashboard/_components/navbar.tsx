@@ -33,10 +33,10 @@ function Navbar() {
           {/*group*/}
           <div className="flex gap-2 items-baseline">
             <ThemeToggleButton />
-            <Button onClick={() => {}}>
+            {/*  <Button onClick={() => {}}>
               <Plus size={20} className="mr-2" />
               Add Note
-            </Button>
+            </Button>*/}
             <LogoutButton />
           </div>
         </div>

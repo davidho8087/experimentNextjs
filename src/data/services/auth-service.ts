@@ -1,3 +1,4 @@
+import 'server-only'
 import { getStrapiURL } from '@/lib/utils'
 
 interface RegisterUserProps {

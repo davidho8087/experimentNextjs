@@ -39,8 +39,8 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   if (!validatedFields.success) {
     return {
       ...prevState,
-      serverErrors: validatedFields.error.flatten().fieldErrors,
-      strapiErrors: null,
+      zodErrors: validatedFields.error.flatten().fieldErrors,
+      serverErrors: null,
       message: 'Missing Fields. Failed to Register.',
     }
   }
@@ -50,8 +50,8 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   if (!responseData) {
     return {
       ...prevState,
-      serverErrors: null,
       zodErrors: null,
+      serverErrors: null,
       message: 'Ops! Something went wrong. Please try again.',
     }
   }

@@ -1,6 +1,7 @@
+import 'server-only'
 import { getStrapiURL } from '@/lib/utils'
 import { getAuthToken } from './get-token'
-
+import qs from 'qs'
 // const query = qs.stringify({
 //   populate: { image: { fields: ['url', 'alternativeText'] } },
 // })
@@ -15,6 +16,7 @@ export async function getUserMeLoader() {
   if (!authToken) return { ok: false, data: null, error: null }
 
   try {
+    console.log('Request ME')
     const response = await fetch(url.href, {
       method: 'GET',
       headers: {
