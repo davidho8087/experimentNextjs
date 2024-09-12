@@ -1,75 +1,51 @@
 'use server'
-import { z } from 'zod'
 import { getAuthToken } from '@/data/services/get-token'
 import { mutateData } from '@/data/services/mutate-data'
 import { revalidatePath } from 'next/cache'
 
-const schemaSetMovie = z.object({
-  title: z.string().min(3).max(20, {
-    message: 'Title must be between 3 and 20 characters',
-  }),
-  description: z.string().min(6).max(100, {
-    message: 'description must be between 6 and 100 characters',
-  }),
-})
-
-export async function setMovieAction(prevState: any, formData: FormData) {
+export async function setMovieAction(formData: FormData) {
   try {
-    console.log('prevState', prevState)
     const authToken = await getAuthToken()
     if (!authToken) throw new Error('No auth token found')
 
-    const validatedFields = schemaSetMovie.safeParse({
-      title: formData.get('title'),
-      description: formData.get('description'),
-    })
-
-    if (!validatedFields.success) {
-      return {
-        ...prevState,
-        serverErrors: null,
-        zodErrors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Movie.',
-      }
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
+    // Extract fields directly from formData
+    const title = formData.get('title')
+    const description = formData.get('description')
+    // Prepare the payload for the API request
     const payload = {
       data: {
-        title: validatedFields.data.title,
-        description: validatedFields.data.description,
-        users_permissions_user: 1,
+        title,
+        description,
+        users_permissions_user: 1, // Replace with the actual user ID logic if needed
       },
     }
 
+    // Send the request to the API
     const responseData = await mutateData({
       method: 'POST',
       path: '/api/movies',
-      payload, // Passing validatedFields.data directly
+      payload,
     })
 
-    // Handle cases where no response data or an error occurs
+    // Check for response errors
     if (!responseData || responseData.error) {
-      console.error('Error responseData:', responseData?.error)
-      throw new Error(
-        responseData?.error?.message ||
-          'Ops! Something went wrong. Please try again.'
-      )
+      return {
+        serverErrors:
+          responseData?.error?.message ||
+          'An error occurred while creating the movie.',
+      }
     }
+
+    // Revalidate the relevant path after a successful operation
+    revalidatePath('/dashboard')
   } catch (error) {
-    console.error('Error:', error)
     return {
-      ...prevState,
       serverErrors:
         error instanceof Error
           ? error.message
           : 'An unexpected error occurred.',
-      zodErrors: null,
-      message: 'Failed to create movie.',
     }
   }
-  revalidatePath('/dashboard')
 }
 
 export async function deleteMovieAction(id: number) {
