@@ -55,17 +55,7 @@ export default async function MovieListing() {
               <TableCell className="font-medium">{item.title}</TableCell>
               <TableCell>{item.description}</TableCell>
               <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <LetDropDown id={item.id} />
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <LetDropDown id={item.id} />
               </TableCell>
             </TableRow>
           ))}
