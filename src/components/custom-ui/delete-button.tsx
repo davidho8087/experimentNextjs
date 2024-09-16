@@ -17,11 +17,11 @@ function Loader() {
 
 interface DeleteButtonProps {
   className?: string
-  id: string
+  id: number
 }
 
-export function DeleteButton({ className, id }: Readonly<DeleteButtonProps>) {
-  const [state, action, isPending] = useActionState(deleteMovieAction, null)
+export function DeleteButton({ className, id }: DeleteButtonProps) {
+  const [state, formAction, isPending] = useActionState(deleteMovieAction, null)
   return (
     <Button
       type="submit"
@@ -29,7 +29,7 @@ export function DeleteButton({ className, id }: Readonly<DeleteButtonProps>) {
       disabled={isPending}
       className={cn(className)}
       onClick={() => {
-        action(id)
+        formAction(id)
       }}
     >
       {isPending ? <Loader /> : <TrashIcon className="w-4 h-4" />}
