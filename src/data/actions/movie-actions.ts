@@ -48,7 +48,7 @@ export async function setMovieAction(formData: FormData) {
   }
 }
 
-export async function deleteMovieAction(previousState: any, id: number) {
+export async function deleteMovieAction(id: number) {
   try {
     await new Promise((resolve) => setTimeout(resolve, 2000))
     const responseData = await mutateData({

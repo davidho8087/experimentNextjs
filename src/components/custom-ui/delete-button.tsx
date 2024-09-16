@@ -21,18 +21,20 @@ interface DeleteButtonProps {
 }
 
 export function DeleteButton({ className, id }: DeleteButtonProps) {
-  const [state, formAction, isPending] = useActionState(deleteMovieAction, null)
-  return (
-    <Button
-      type="submit"
-      aria-disabled={isPending}
-      disabled={isPending}
-      className={cn(className)}
-      onClick={() => {
-        formAction(id)
-      }}
-    >
-      {isPending ? <Loader /> : <TrashIcon className="w-4 h-4" />}
-    </Button>
-  )
+  // const [state, formAction, isPending] = useActionState(deleteMovieAction, null)
+
+  return <div>Delete</div>
+  // return (
+  //   <Button
+  //     type="submit"
+  //     aria-disabled={isPending}
+  //     disabled={isPending}
+  //     className={cn(className)}
+  //     onClick={() => {
+  //       formAction(id)
+  //     }}
+  //   >
+  //     {isPending ? <Loader /> : <TrashIcon className="w-4 h-4" />}
+  //   </Button>
+  // )
 }
