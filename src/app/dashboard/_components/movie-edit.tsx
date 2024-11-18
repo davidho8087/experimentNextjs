@@ -63,8 +63,10 @@ export default function MovieEdit({ isOpen, onClose, movie }: MovieEditProps) {
         const response = await updateMovieAction(movie.id, validatedFields.data)
         onClose()
       })
-    } catch (error) {
-      toast.error(error.message)
+    } catch (error: unknown) {
+      throw new Error(
+        'Failed to update the movie. Please try again or contact support.'
+      )
     }
   }
 

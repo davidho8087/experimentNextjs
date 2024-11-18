@@ -90,7 +90,6 @@ export async function updateMovieAction(movieId: number, data: unknown) {
       message: 'Movie Updated',
     }
   } catch (error: unknown) {
-    console.error(error.message)
     throw new Error(
       'Failed to update the movie. Please try again or contact support.'
     )
