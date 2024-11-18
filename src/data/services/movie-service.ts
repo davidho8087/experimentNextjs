@@ -2,11 +2,11 @@ import 'server-only'
 import qs from 'qs'
 import { flattenAttributes, getStrapiURL } from '@/lib/utils'
 import { getAuthToken } from '@/data/services/get-token'
-import { MovieItem } from '@/lib/types'
+import { Movie } from '@/lib/types'
 
 type GetMoviesResponse = {
   ok?: boolean
-  data: MovieItem[] | [] | null
+  data: Movie[] | [] | null
   error?: { message: string } | null
 }
 
