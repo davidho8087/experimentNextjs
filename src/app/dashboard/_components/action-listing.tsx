@@ -22,7 +22,7 @@ import { useState } from 'react'
 import MovieEdit from '@/app/dashboard/_components/movie-edit'
 import { toast } from 'sonner'
 
-export default function ActionListing({ movie }) {
+export default function ActionListing({ movie }: { movie: any }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
