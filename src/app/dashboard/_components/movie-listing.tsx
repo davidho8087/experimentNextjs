@@ -42,7 +42,7 @@ export default async function MovieListing() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {movies.map((movie: MovieItem) => (
+          {movies.map((movie: any) => (
             <TableRow key={movie.id}>
               <TableCell className="font-medium">{movie.title}</TableCell>
               <TableCell>{movie.description}</TableCell>
