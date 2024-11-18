@@ -2,6 +2,8 @@
 import { getAuthToken } from '@/data/services/get-token'
 import { mutateData } from '@/data/services/mutate-data'
 import { revalidatePath } from 'next/cache'
+import { flattenAttributes } from '@/lib/utils'
+import { z } from 'zod'
 
 export async function setMovieAction(formData: FormData) {
   try {
@@ -35,8 +37,6 @@ export async function setMovieAction(formData: FormData) {
           'An error occurred while creating the movie.',
       }
     }
-
-    // Revalidate the relevant path after a successful operation
     revalidatePath('/dashboard')
   } catch (error) {
     return {
@@ -49,8 +49,8 @@ export async function setMovieAction(formData: FormData) {
 }
 
 export async function deleteMovieAction(id: number) {
+  await new Promise((resolve) => setTimeout(resolve, 3000))
   try {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
     const responseData = await mutateData({
       method: 'DELETE',
       path: `/api/movies/${id}`,
@@ -60,18 +60,39 @@ export async function deleteMovieAction(id: number) {
       console.error('Error responseData:', responseData?.error)
       throw new Error(
         responseData?.error?.message ||
-          'Ops! Something went wrong. Please try again.'
+          'Oops! Something went wrong. Please try again.'
       )
     }
+    revalidatePath('/dashboard')
   } catch (error) {
-    console.error('Error:', error)
-    return {
-      serverErrors:
-        error instanceof Error
-          ? error.message
-          : 'An unexpected error occurred.',
-      message: 'Failed to delete movie.',
-    }
+    console.error('Error deleting', error)
+    throw new Error(
+      'Failed to delete the movie. Please try again or contact support.'
+    )
   }
-  revalidatePath('/dashboard')
+}
+
+export async function updateMovieAction(movieId: number, data: unknown) {
+  const payload = {
+    data,
+  }
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    await mutateData({
+      method: 'PUT',
+      path: '/api/movies/' + movieId,
+      payload,
+    })
+
+    revalidatePath('/dashboard')
+    return {
+      message: 'Movie Updated',
+    }
+  } catch (error: unknown) {
+    console.error(error.message)
+    throw new Error(
+      'Failed to update the movie. Please try again or contact support.'
+    )
+  }
 }

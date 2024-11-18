@@ -29,7 +29,7 @@ export async function mutateData({ method, path, payload }: MutateDataOptions) {
     // Check for HTTP errors
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.message || 'Failed to create data.')
+      throw new Error(errorData.message || 'Failed')
     }
 
     return await response.json()

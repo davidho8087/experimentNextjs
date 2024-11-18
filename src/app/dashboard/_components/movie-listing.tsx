@@ -6,22 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { MoreHorizontal } from 'lucide-react'
 import { getMovies } from '@/data/services/movie-service'
-import LetDropDown from '@/app/dashboard/_components/drop-down-list'
-import { MovieItem } from '@/lib/types'
 import { DisplayNoRecords } from '@/components/custom-ui/display-no-record'
 import { Fragment } from 'react'
+import ActionListing from '@/app/dashboard/_components/action-listing'
 
 export default async function MovieListing() {
   const { data: movies } = await getMovies('1')
+
   if (!movies || movies.length === 0) {
     return (
       <Fragment>
@@ -50,12 +42,12 @@ export default async function MovieListing() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {movies.map((item: MovieItem) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.title}</TableCell>
-              <TableCell>{item.description}</TableCell>
+          {movies.map((movie: MovieItem) => (
+            <TableRow key={movie.id}>
+              <TableCell className="font-medium">{movie.title}</TableCell>
+              <TableCell>{movie.description}</TableCell>
               <TableCell className="text-right">
-                <LetDropDown id={item.id} />
+                <ActionListing movie={movie} />
               </TableCell>
             </TableRow>
           ))}

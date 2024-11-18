@@ -8,6 +8,7 @@ import {
   loginUserService,
   registerUserService,
 } from '@/data/services/auth-service'
+import { getErrorMessage } from '@/lib/utils'
 
 const config = {
   maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -46,6 +47,8 @@ export async function registerUserAction(prevState: any, formData: FormData) {
   }
 
   const responseData = await registerUserService(validatedFields.data)
+
+  console.log('responseData', responseData)
 
   if (!responseData) {
     return {
@@ -101,24 +104,35 @@ export async function loginUserAction(prevState: any, formData: FormData) {
       message: 'Missing Fields. Failed to Login.',
     }
   }
+  let responseData = null
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    responseData = await loginUserService(validatedFields.data)
 
-  const responseData = await loginUserService(validatedFields.data)
-
-  if (!responseData) {
-    return {
-      ...prevState,
-      serverErrors: responseData.error,
-      zodErrors: null,
-      message: 'Ops! Something went wrong. Please try again.',
+    if (!responseData) {
+      return {
+        ...prevState,
+        serverErrors: responseData?.error || 'Unknown error',
+        zodErrors: null,
+      }
     }
-  }
-
-  if (responseData.error) {
+    if (responseData.error) {
+      return {
+        ...prevState,
+        serverErrors: responseData.error,
+        zodErrors: null,
+        message: 'Failed to Login.',
+      }
+    }
+  } catch (error) {
     return {
       ...prevState,
-      serverErrors: responseData.error,
+      serverErrors: {
+        status: 500,
+        name: 'Server Error',
+        message: getErrorMessage(error),
+      },
       zodErrors: null,
-      message: 'Failed to Login.',
     }
   }
 

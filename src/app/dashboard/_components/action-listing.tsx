@@ -17,67 +17,94 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
 import { deleteMovieAction } from '@/data/actions/movie-actions'
+import { useState } from 'react'
+import MovieEdit from '@/app/dashboard/_components/movie-edit'
+import { toast } from 'sonner'
 
-export default function LetDropDown({ id }: { id: number }) {
+export default function ActionListing({ movie }) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await deleteMovieAction(movie.id)
+      setIsDeleteDialogOpen(false)
+    } catch (error) {
+      setIsDeleteDialogOpen(false)
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to delete movie'
+      )
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+  const handleEditDialogClose = () => {
+    setIsEditDialogOpen(false)
+  }
+
+  const handleOpenChange = (open: boolean) => {
+    if (isDeleting) {
+      setIsDeleteDialogOpen(true)
+    } else {
+      setIsDeleteDialogOpen(open)
+    }
+  }
+
   return (
-    <Dialog>
+    <div className="p-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DialogTrigger asChild>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-          </DialogTrigger>
-          <DropdownMenuItem
-            onClick={async () => {
-              await deleteMovieAction(id)
-            }}
-          >
+          <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit Movie</DialogTitle>
-          <DialogDescription>
-            Make changes to the movie information here. Click save when
-            you&apos;re done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Title
-            </Label>
-            <Input
-              id="title"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Description
-            </Label>
-            <Input
-              id="description"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <MovieEdit
+        isOpen={isEditDialogOpen}
+        onClose={handleEditDialogClose}
+        movie={movie}
+      />
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this item? This action cannot be
+              undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }

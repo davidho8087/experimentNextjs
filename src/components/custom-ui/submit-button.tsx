@@ -26,15 +26,16 @@ export function SubmitButton({
   loading,
   className,
 }: Readonly<SubmitButtonProps>) {
-  const status = useFormStatus()
+  const { pending } = useFormStatus()
+  console.log('pending', pending)
   return (
     <Button
       type="submit"
-      aria-disabled={status.pending || loading}
-      disabled={status.pending || loading}
+      aria-disabled={pending || loading}
+      disabled={pending || loading}
       className={cn(className)}
     >
-      {status.pending || loading ? <Loader text={loadingText} /> : text}
+      {pending || loading ? <Loader text={loadingText} /> : text}
     </Button>
   )
 }
